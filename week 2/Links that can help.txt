@@ -1,0 +1,7 @@
+# Data Preprocessing
+
+https://blackboard.usiu.ac.ke/ultra/courses/_31881_1/cl/outline
+
+## Practice Data Loading
+
+https://hevodata.com/learn/how-to-load-data-into-python/
