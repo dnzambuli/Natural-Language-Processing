@@ -28,9 +28,9 @@ def test_model(test_data_path, model_path):
     df["Text"] = df["Text"].fillna("")
     
     # Ground truth labels
-    if "lab" not in df.columns:
-        raise ValueError("The input dataset does not have a 'lab' column.")
-    true_labels = df["lab"]
+    if "Label" not in df.columns:
+        raise ValueError("The input dataset does not have a 'Label' column.")
+    true_labels = df["Label"]
     
     # Predict topics
     predicted_labels = df["Text"].apply(lambda text: predict_topic(model_path, text))
@@ -40,12 +40,11 @@ def test_model(test_data_path, model_path):
     return accuracy
 
 if __name__ == "__main__":
-    import os
 
     # Paths
-    processed_data_dir = "../data/processed"
-    model_dir = "../data/models"
-    accuracy_file_path = "../data/accuracy.txt"
+    processed_data_dir = "./data/processed"
+    model_dir = "./data/model"
+    accuracy_file_path = "./data/accuracy.txt"
     
     # Ensure required directories exist
     os.makedirs("../data", exist_ok=True)
