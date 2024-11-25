@@ -1,15 +1,16 @@
 import sys
 from app.predict import predict_topic
 import stopwordsiso as swiso
+from app.train_model import read_stopwords_from_yaml
 
 '''
 based on my models
 
 |   Language    |       NMF     |      LDA      |
 |_______________|_______________|_______________|
-|   Chichewa    |      21.94    |      3.23     |
-|   Amharic     |       8.22    |     11.32     |
-|   Swahili     |      22.87    |     31.12     |
+|   Chichewa    |      23.06    |     18.39     |
+|   Amharic     |      22.87    |     13.83     |
+|   Swahili     |       8.22    |     11.32     |
 
 '''
 
@@ -50,14 +51,15 @@ lang_topic_codex = {
     'Swahili': ['Economic', 'National', 'Sports', 'International', 'Entertainment', 'Health'],
     'Amharic': ['Sports', 'Business', 'Health', 'Politics']
 }
+stopword_dict = read_stopwords_from_yaml("./data/raw/stopwords.yaml")
 
 def detect_language(text):
 
     # common words in each language
 
-    chichewa_stopwords = swiso.stopwords('ny')  # ISO code for Chichewa
-    amharic_stopwords = swiso.stopwords('am')  # ISO code for Amharic
-    swahili_stopwords = swiso.stopwords('sw')
+    chichewa_stopwords = set(stopword_dict['ny'])  # ISO code for Chichewa
+    amharic_stopwords = set(stopword_dict['am'])  # ISO code for Amharic
+    swahili_stopwords = set(stopword_dict['sw'])
 
     # language specific stopwords
     text_words = set(text.lower().split())
@@ -88,7 +90,7 @@ def main():
     # select the ideal model 
     model_paths = {
         "Chichewa": "./data/model/nmf_chichewa.pkl",
-        "Amharic": "./data/model/lda_amharic.pkl",
+        "Amharic": "./data/model/nmf_amharic.pkl",
         "Swahili": "./data/model/lda_swahili.pkl"
     }
 

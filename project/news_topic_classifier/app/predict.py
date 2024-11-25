@@ -2,18 +2,24 @@ import os
 import pandas as pd
 import joblib
 from sklearn.metrics import accuracy_score
+from sklearn.decomposition import NMF, LatentDirichletAllocation
 
 def predict_topic(model_path, text):
     # Load model and vectorizer
     model_data = joblib.load(model_path)
-    lda_model = model_data["model"]
+    model = model_data["model"]
     vectorizer = model_data["vectorizer"]
     
     # Transform the input text
     dt_matrix = vectorizer.transform([text])
     
     # Predict topic probabilities
-    topic_probabilities = lda_model.transform(dt_matrix)
+    if isinstance(model, LatentDirichletAllocation):
+        topic_probabilities = model.transform(dt_matrix)
+    elif isinstance(model, NMF):
+        topic_probabilities = model.transform(dt_matrix)
+    else:
+        raise ValueError("Model type not supported")
     
     # Return the most probable topic
     return topic_probabilities.argmax()
@@ -47,31 +53,41 @@ if __name__ == "__main__":
     accuracy_file_path = "./data/accuracy.txt"
     
     # Ensure required directories exist
-    os.makedirs("../data", exist_ok=True)
+    os.makedirs(processed_data_dir, exist_ok=True)
+    os.makedirs(model_dir, exist_ok=True)
 
-    os.makedirs(os.path.join(processed_data_dir, "Chichewa"), exist_ok=True)
-    os.makedirs(os.path.join(processed_data_dir, "Swahili"), exist_ok=True)
-    os.makedirs(os.path.join(processed_data_dir, "Amharic"), exist_ok=True)
 
     # Model and test data paths
     test_data = {
-        "chichewa_model": {
+        "chichewa_lda": {
             "model_path": os.path.join(model_dir, "lda_chichewa.pkl"),
             "test_path": os.path.join(processed_data_dir, "Chichewa", "chichewa_clean_test.csv"),
         },
-        "swahili_model": {
+        "chichewa_nmf": {
+            "model_path": os.path.join(model_dir, "nmf_chichewa.pkl"),
+            "test_path": os.path.join(processed_data_dir, "Chichewa", "chichewa_clean_test.csv"),
+        },
+        "swahili_lda": {
             "model_path": os.path.join(model_dir, "lda_swahili.pkl"),
             "test_path": os.path.join(processed_data_dir, "Swahili", "swahili_clean_test.csv"),
         },
-        "amharic_model": {
+        "swahili_nmf": {
+            "model_path": os.path.join(model_dir, "nmf_swahili.pkl"),
+            "test_path": os.path.join(processed_data_dir, "Swahili", "swahili_clean_test.csv"),
+        },
+        "amharic_lda": {
             "model_path": os.path.join(model_dir, "lda_amharic.pkl"),
             "test_path": os.path.join(processed_data_dir, "Amharic", "amharic_clean_test.csv"),
         },
+        "amharic_nmf": {
+            "model_path": os.path.join(model_dir, "nmf_amharic.pkl"),
+            "test_path": os.path.join(processed_data_dir, "Amharic", "amharic_clean_test.csv"),
+        }
     }
     
     # Save accuracies
     with open(accuracy_file_path, "w") as file:
-        file.write("model_name\taccuracy\n")
+        file.write("Model\taccuracy\n")
         for model_name, paths in test_data.items():
             try:
                 print(f"Processing {model_name}...")
