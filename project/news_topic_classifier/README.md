@@ -55,5 +55,107 @@ The key concept was `Topic Modeling` selected as the practical part of the cours
 > "Customer Service" (e.g., helpful, rude, response time)
 > 
 >"Product Quality" (e.g., durable, faulty, premium)
+>
+
 
 # Project Implementation
+
+## Project Structure
+
+```{bash}
+news_topic_classifier/
+├── app/
+│   ├── __init__.py            # the `app` package
+|   ├── clean_data.py          # load recode clean and save the clean data
+│   ├── main.py                # where the entry point for the final app is
+│   ├── predict.py             # test the model accuracy using the AUC test
+│   ├── preprocess.py          # collect the data from built in packages 
+│   └── train_model.py         # training the model
+├── data/
+│   ├── raw/                   # Raw dataset (files I made myself)
+│   ├── processed/             # Preprocessed dataset (split data and clean data store)
+│   └── model/                 # Saved trained models (LDA and NMF)
+├── tests/
+│   ├── test_preprocess.py     # Unit tests for text preprocessing (TBD)
+│   ├── test_predict.py        # Unit tests for prediction functionality (TBD)
+│   └── test_train_model.py    # Unit tests for model training (TBD)
+├── requirements.txt           # the required Python packages
+├── README.md                  # Project documentation
+├── setup.py                   # if i want to convert the python script to executable i will populate this
+└── .gitignore                 # Files and folders to ignore in version control
+
+```
+
+## Data sources 
+
+**Datasets**
+1. [Chichewa dataset](https://zenodo.org/records/4315018)
+2. [Amharic and Swahili datasets](https://huggingface.co/datasets/community-datasets/swahili_news/blob/main/README.md)
+
+**Stop Words**
+1. [Kiswahili stopwords](https://github.com/stopwords-iso/stopwords-iso)
+2. [Chichewa stopwords](https://www.chichewagrammar.net/)
+3. [Amharic stopwords](https://www.irit.fr/AmharicResources/wp-content/uploads/2021/03/StopWord-list.txt)
+
+## Model Choice
+
+- NMF 
+- LDA
+
+## Model Performance 
+
+|   Language    |       NMF     |      LDA      |
+|:--------------|:-------------:|:-------------:|
+|   Chichewa    |      23.06    |     18.39     |
+|   Amharic     |      22.87    |     13.83     |
+|   Swahili     |       8.22    |     11.32     |
+
+## Challenges When Implementing 
+
+|challenge| Solution|
+|:----|:----|
+|No actual stopword data available for `amharic` and `chichewa`| created the [stopwords]("./data/raw/stopwords.yaml")|
+|Encoding for **Amharic text**| using `utf-8` for all reads and data write|
+|Data quality in **Amharic**| custom data clean|
+
+
+# Running the program 
+
+## Pre-requisites
+1. Python 
+
+## Steps
+
+1. clone the project folder from github
+2. set-up a virtual enviroment
+
+```{bash}
+>> python -m venv ['a custom env name']
+
+>> . activate 
+```
+3. install the requirements (ensure you )
+
+```{bash}
+>> pip install -r requirements.txt
+
+>>
+```
+4. Run the program 
+
+```{bash}
+>> python -m app.main "<text>"
+
+>>
+```
+
+# Thank you
+
+### Copyright 
+
+<2024 &COPY; Dnzambuli>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
