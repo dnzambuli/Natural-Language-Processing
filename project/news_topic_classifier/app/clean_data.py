@@ -3,9 +3,9 @@ import os
 
 # Define paths
 DATA_PATHS = {
-    "Chichewa": {"train": "../data/processed/Chichewa/chichewa_train.csv", "test": "../data/processed/Chichewa/chichewa_test.csv"},
-    "Swahili": {"train": "../data/processed/Swahili/swahili_train.csv", "test": "../data/processed/Swahili/swahili_test.csv"},
-    "Amharic": {"train": "../data/processed/Amharic/amharic_train.csv", "test": "../data/processed/Amharic/amharic_test.csv"},
+    "Chichewa": {"train": "./data/processed/Chichewa/chichewa_train.csv", "test": "./data/processed/Chichewa/chichewa_test.csv"},
+    "Swahili": {"train": "./data/processed/Swahili/swahili_train.csv", "test": "./data/processed/Swahili/swahili_test.csv"},
+    "Amharic": {"train": "./data/processed/Amharic/amharic_train.csv", "test": "./data/processed/Amharic/amharic_test.csv"},
 }
 
 # Define text and label columns for each language
@@ -28,8 +28,18 @@ def recode_labels(df, language, label_column):
     if label_column not in df.columns:
         raise KeyError(f"Expected column '{label_column}' not found in the data for {language}. Available columns: {df.columns}")
     
+    label_mapping = {
+        'POLITICS': 'GOVERNANCE', 'LAW/ORDER': 'GOVERNANCE', 'LOCALCHIEFS': 'GOVERNANCE',
+        'SOCIAL ISSUES': 'SOCIETY', 'RELATIONSHIPS': 'SOCIETY', 'OPINION/ESSAY': 'SOCIETY', 'CULTURE': 'SOCIETY', 'EDUCATION': 'SOCIETY', 'SOCIAL': 'SOCIETY',
+        'HEALTH': 'WELLBEING', 'WITCHCRAFT': 'WELLBEING', 'RELIGION': 'WELLBEING',
+        'WILDLIFE/ENVIRONMENT':'ENVIRONMENT', 'FARMING':'ENVIRONMENT', 'FLOODING': 'ENVIRONMENT',
+        'MUSIC':'ENTERTAINMENT', 'ARTS AND CRAFTS':'ENVIRONMENT', 'SPORTS':'ENTERTAINMENT',
+        'TRANSPORT':'INFRASTRUCTURE', 'ECONOMY': 'INFRASTRUCTURE' 
+    }
+    
     if language == "Chichewa":
-        df["lab"] = pd.factorize(df[label_column])[0]
+        df['recode'] = df[label_column].map(label_mapping)
+        df["lab"] = pd.factorize(df['recode'])[0]
     else:
         df["lab"] = df[label_column]  # No change for other languages
     return df
@@ -48,7 +58,7 @@ def save_data(df, output_dir, filename):
     print(f"Saved {filename} to {output_file}")
 
 if __name__ == "__main__":
-    processed_data_dir = "../data/processed"
+    processed_data_dir = "./data/processed"
 
     # Process each language
     for language, paths in DATA_PATHS.items():
